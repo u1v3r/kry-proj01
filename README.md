@@ -1,2 +1,2 @@
-kry-proj01
+1. Projekt do KRY
 ==========
