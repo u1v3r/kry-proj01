@@ -1,14 +1,19 @@
 # Makefile pre proj01
 
 CC = gcc
-PNAME = proj01
-CFLAGS = -Wall -ansi -pthread -g $(PNAME).c -o $(PNAME)
+PNAME = kry
+CFLAGS = -Wall -ansi -pthread -g -pg 
 
-build: $(PNAME).c
-	$(CC) $(CFLAGS)
+objects = kasiski.o
 
+build: $(PNAME).c $(objects)
+	$(CC) $(CFLAGS) -o $(PNAME) $(PNAME).c $(objects)
+
+kasiski.o: kasiski.h kasiski.c
+	$(CC) $(CFLAGS) -c -o kasiski.o kasiski.c 
+	
 clean: $(PNAME).c
-	rm -f $(PNAME)
+	rm -f $(PNAME) *.o
 	
 	
 	
