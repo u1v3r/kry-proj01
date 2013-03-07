@@ -1,2 +1,7 @@
 .directory
-proj01
+kry
+*.o
+*.out
+tests/
+*.txt
+*.zip
