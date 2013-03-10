@@ -71,22 +71,23 @@ void *friedman_test(void *ptr){
 	k0 = index_of_coincidence(c_text_s,len);
 	*friedman = (kp - kr)/(k0 - kr);
 
-	test_len(c_text_s,len);
+	test_len(c_text_s,len,(floor(*friedman)));
 
 	return friedman;
 }
 
-void test_len(char *string, double len){
+void test_len(char *string, double len, double friedman){
 
 	char **ics;
 	char c;
-	unsigned long i = 0 , j = 0, k, m, result_m;
+	unsigned long i = 0 , j = 0, k, m, result_m, row_count = 0;
 	double row_len,diff_sum = 0.0, ic_min = 1;
 	long column_max = 500;
 
+
 	ics = (char **)malloc(column_max * sizeof(char *));
 
-	for (m = 3; m < 500; m++) {
+	for (m = (int)friedman; m < 500; m++) {
 
 		row_len = len/m;
 		j = 0;
@@ -116,11 +117,11 @@ void test_len(char *string, double len){
 
 		diff_sum = 0;
 		for (k = 0; k < m; ++k) {
-			diff_sum += fabs(index_of_coincidence(ics[k],row_len) - 0.065);
+			diff_sum += fabs(index_of_coincidence(ics[k],strlen(ics[k])) - 0.0667);
 			free(ics[k]);
 		}
 
-		printf("%d - %f < %f\n",m,diff_sum,ic_min);
+		/*printf("%d - %f < %f\n",m,diff_sum,ic_min);*/
 
 		if(diff_sum < ic_min){
 			ic_min = diff_sum;
@@ -145,6 +146,7 @@ double index_of_coincidence(char *x, long len){
 	for (i = 0; i < LETTERS; ++i) {
 		lf += (freqs[i]*(freqs[i] - 1));
 	}
+
 
 
 	return lf/(len*(len - 1));

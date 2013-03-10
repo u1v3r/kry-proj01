@@ -2,7 +2,7 @@
 
 CC = gcc
 PNAME = kry
-CFLAGS = -Wall -ansi -pedantic -pthread -O3 -pg -g
+CFLAGS = -Wall -ansi -pedantic -lm -pthread -O3 -pg -g
 
 objects = kasiski.o simple_hash_table.o friedman.o other_fcs.o decrypt.o
 
