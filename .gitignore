@@ -5,3 +5,4 @@ kry
 tests/
 *.txt
 *.zip
+.settings/

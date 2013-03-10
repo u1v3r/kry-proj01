@@ -12,7 +12,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 void *friedman_test(void *ptr);
-
+void test_len(char *string, double len);
+double index_of_coincidence(char *x, long row_len);
+void letter_freqs(char *input, double freqs[]);
 #endif /* FRIEDMAN_H_ */

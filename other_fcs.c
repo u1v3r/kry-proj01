@@ -62,28 +62,28 @@ void substring(char *dest,const char *string, int start, int len) {
 
 }
 
-char *substring2(const char* from, size_t start, size_t size){
-	char *to;
-	to = strndup(from+start, size);
-	return to;
-}
-
 unsigned int hash_int(void *value){
 
-	int key = *((int*)value);
-
-	return key % SIZE_HASH_TABLE_GCDS;
+	return *((int*)value) % SIZE_HASH_TABLE_GCDS;
 }
 
-unsigned int hash_char(void *value, int len){
+unsigned int hash_char(void *value){
 
-    unsigned hash_value = 0;
-    int i;
+	unsigned hash_value = 0;
+    int i = 0;
+    char c;
     const char *string = (char*)value;
+    /*int len = strlen(string);*/
 
+    while((c = string[i++]) != 0){
+    	hash_value = c ^ 11 * hash_value;
+    }
+
+    /*
     for(i = 0; i < len; i++){
         hash_value = string[i] ^ 11 * hash_value;
     }
+    */
 
     return (hash_value % SIZE_HASH_TABLE_NGRAMS);
 }
@@ -98,7 +98,10 @@ int compare_int(void *a, void *b){
 }
 
 int compare_char(void *a, void *b){
-	return strcmp((char *)a,(char *)b);
+
+	if(strcmp((char *)a,(char *)b) == 0) return 1;
+
+	return 0;
 }
 
 int gcds_calc(int *ngram, int len){

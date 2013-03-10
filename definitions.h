@@ -15,15 +15,18 @@
 #define NGRAMS_DEFAULT_POSITIONS 200 	/* alokacia - pocet alokovanej pamate pre pole pozicii ngramu v texte */
 #define NGRAM_START 3 			   		/* pociatocna dlzka hladanych n-gramov */
 #define NGRAM_STOP 5
-#define NGRAM_MIN_COUNT 3				/* od akoho poctu ngramov sa zohladnuju a ukladaju */
-#define SIZE_HASH_TABLE_GCDS 199		/* */
-#define SIZE_HASH_TABLE_NGRAMS 10000	/* */
-#define INPUT_TEXT_MAX_LENGTH 5000 		/* dlzka textu ktory sa zo vstupu pouzije */
+#define NGRAM_MIN_COUNT 2				/* od akoho poctu ngramov sa zohladnuju a ukladaju */
+#define SIZE_HASH_TABLE_GCDS 199		/* velkost hash table pre ukladanie vsetkych gcd */
+#define SIZE_HASH_TABLE_NGRAMS 10007	/* velkost hash table pre ukladanie ngramov */
+#define INPUT_TEXT_MAX_LENGTH 10000 	/* dlzka textu ktory sa zo vstupu pouzije na kasiskyho test */
+#define NGRAM_MIN_WEIGHT 3.4			/* koeficiant weight pri ktorom sa ngram zohladnuje do konecneho vysledku */
+#define NGRAM_COUNT_CONST 0.2
+#define NGRAM_LEN_CONST 0.4
+#define LETTERS 26
 
 typedef struct _input_text{
-	char *text;							/* skrateny text na hodnotu INPUT_TEXT_MAX_LENGHT*/
+	char *text;							/* skrateny text na hodnotu INPUT_TEXT_MAX_LENGHT */
 	char *orig_text;					/* originalny text s odstranenymi zbytocnnymi znakmi*/
-	/*unsigned int len;*/					/* dlzka originalneho textu */
 } input_text_t;
 
 #endif /* DEFINITIONS_H_ */

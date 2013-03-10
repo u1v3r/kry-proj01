@@ -65,7 +65,7 @@ char *strip_stdin(char *output_text){
 	while((c = getchar()) != EOF){
 		if(isalpha(c)){
 			if(count >= new_size - 1){
-				new_size = 2*count;
+				new_size = 3*count;
 #if DEBUG == 2
 				printf("reall new size: %d\n",new_size);
 #endif
@@ -89,3 +89,4 @@ char *strip_stdin(char *output_text){
 
 	return orig_text;
 }
+

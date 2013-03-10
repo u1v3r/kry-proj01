@@ -30,11 +30,8 @@ hash_int(void *value);
 int
 compare_int(void *a, void *b);
 
-char
-*substring2(const char* from, size_t start, size_t size);
-
 unsigned int
-hash_char(void *value, int len);
+hash_char(void *value);
 
 int
 compare_char(void *a, void *b);

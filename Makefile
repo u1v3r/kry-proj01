@@ -2,11 +2,13 @@
 
 CC = gcc
 PNAME = kry
-CFLAGS = -Wall -ansi -pthread -O3 -g
+CFLAGS = -Wall -ansi -pedantic -pthread -O3 -pg -g
 
 objects = kasiski.o simple_hash_table.o friedman.o other_fcs.o decrypt.o
 
-build: $(PNAME).c $(objects)
+rebuild: clean all 
+
+all: $(PNAME).c $(objects)
 	$(CC) $(CFLAGS) -o $(PNAME) $(PNAME).c $(objects)
 
 kasiski.o: kasiski.h kasiski.c

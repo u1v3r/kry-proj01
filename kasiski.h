@@ -20,6 +20,7 @@ typedef struct kasiski_node{
 	struct kasiski_node *next;	/* dalsi uzol */
 	char *ngram;				/* text ngramu */
 	int *positions;				/* pozicie ngramu */
+	int _ngram_max_pos;
 	unsigned int count;			/* pocitadlo ngramov v texte */
 	int *distances;				/* vzdialenosti medzi ngram */
 	float weight;				/* vaha pouzivana pri vypocte gcd*/
@@ -33,12 +34,13 @@ void *kasiski_test(void *c_text_s);
 void find_ngrams(const char *c_text,unsigned int c_len);
 void calc_factors();
 void add_ngram(kasisky_node_t *ngram, int ngram_size);
-kasisky_node_t *create_default_ngram_node(char *ngram, int position);
+kasisky_node_t *create_default_ngram_node(char *ngram);
 void add_position(kasisky_node_t *ngram, int position, int ngram_len);
 kasisky_node_t *create_empty_ngram_node(void);
 kasisky_node_t *search_ngram(kasisky_node_t *node, char *ngram);
 void free_ngram_node(kasisky_node_t* ngram_node);
 void actualize_gcd_counter(kasisky_node_t* ngram_node);
-int hash_table_max();
+int gcd_hash_table_max();
+void search_rep(const char *search, const char *text, int sub_len,int text_len, kasisky_node_t *ngram);
 
 #endif /* KASISKY_H_ */
