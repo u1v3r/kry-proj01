@@ -62,12 +62,11 @@ void substring(char *dest,const char *string, int start, int len) {
 
 }
 
-unsigned int hash_int(void *value){
-
-	return *((int*)value) % SIZE_HASH_TABLE_GCDS;
+unsigned int hash_int(void *value, unsigned int hash_table_size){
+	return *((int*)value) % hash_table_size;
 }
 
-unsigned int hash_char(void *value){
+unsigned int hash_char(void *value, unsigned int hash_table_size){
 
 	unsigned hash_value = 0;
     int i = 0;
@@ -85,7 +84,7 @@ unsigned int hash_char(void *value){
     }
     */
 
-    return (hash_value % SIZE_HASH_TABLE_NGRAMS);
+    return (hash_value % hash_table_size);
 }
 
 int compare_int(void *a, void *b){

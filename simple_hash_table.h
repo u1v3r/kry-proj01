@@ -20,9 +20,20 @@ typedef struct _node{
 } hash_table_node_t;
 
 void
-t_insert(void *key, void *value, unsigned int (*hash_fnc)(void *f_value),hash_table_node_t *hash_table[], size_t key_s, size_t value_s);
+t_insert(void *key,
+		void *value,
+		unsigned int (*hash_fnc)(void *f_value, unsigned int size),
+		hash_table_node_t *hash_table[],
+		size_t key_s,
+		size_t value_s,
+		unsigned int hash_table_size);
 
 hash_table_node_t
-*t_search(void *key, unsigned int (*hash_fnc)(void *f_value), int (*comp)(void *a, void *b),hash_table_node_t *hash_table[]);
+*t_search(
+		void *key,
+		unsigned int (*hash_fnc)(void *f_value, unsigned int size),
+		int (*comp)(void *a, void *b),
+		hash_table_node_t *hash_table[],
+		unsigned int hash_table_size);
 
 #endif /* SIMPLE_HASH_TABLE_H_ */

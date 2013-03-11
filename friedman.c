@@ -10,7 +10,7 @@
 void *friedman_test(void *ptr){
 
 	char *c_text_s = ptr;
-	unsigned long c, i = 0, j = 0;
+	/*unsigned long c, i = 0, j = 0;*/
 	double *friedman = (double *)malloc(sizeof(double));
 	double k0 = 0.0, kp = 0.065, kr = 0.0385;
 	double len = strlen(c_text_s);
@@ -71,23 +71,23 @@ void *friedman_test(void *ptr){
 	k0 = index_of_coincidence(c_text_s,len);
 	*friedman = (kp - kr)/(k0 - kr);
 
-	test_len(c_text_s,len,(floor(*friedman)));
+	/*test_len(c_text_s,len,(floor(*friedman)));*/
 
 	return friedman;
 }
 
-void test_len(char *string, double len, double friedman){
+void test_len(char *string, double len, hash_table_node_t *m_numbers){
 
 	char **ics;
 	char c;
-	unsigned long i = 0 , j = 0, k, m, result_m, row_count = 0;
+	unsigned long i = 0 , j = 0, k, m, result_m;
 	double row_len,diff_sum = 0.0, ic_min = 1;
 	long column_max = 500;
 
 
 	ics = (char **)malloc(column_max * sizeof(char *));
 
-	for (m = (int)friedman; m < 500; m++) {
+	for (m = 0; m < 10; m++) {
 
 		row_len = len/m;
 		j = 0;
@@ -130,7 +130,7 @@ void test_len(char *string, double len, double friedman){
 
 	}
 
-	printf("result: %d\n",result_m);
+	printf("result: %lu\n",result_m);
 
 	free(ics);
 }

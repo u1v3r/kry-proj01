@@ -9,7 +9,6 @@
 #define OTHER_FCS_H_
 
 #include "definitions.h"
-
 #include <string.h>
 
 unsigned
@@ -25,13 +24,13 @@ int
 gcds_calc(int *ngram, int count);
 
 unsigned int
-hash_int(void *value);
+hash_int(void *value,unsigned int hash_table_size);
 
 int
 compare_int(void *a, void *b);
 
 unsigned int
-hash_char(void *value);
+hash_char(void *value, unsigned int hash_table_size);
 
 int
 compare_char(void *a, void *b);

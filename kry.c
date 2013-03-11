@@ -12,7 +12,7 @@
 int main(int argc, char **argv) {
 
 	void *kasisky,*friedman;
-	int kasisky_i = 0;
+	hash_table_node_t *kasisky_i;
 	double friedman_f = 0.0;
 
 	input_text_t c_text_s;
@@ -38,10 +38,10 @@ int main(int argc, char **argv) {
 	pthread_join(kasisky_thread,&kasisky);
 	pthread_join(friedman_thread,&friedman);
 
-	kasisky_i = *((int*)(kasisky));
+	kasisky_i = (hash_table_node_t*)kasisky;
 	friedman_f = *((double*)(friedman));
 
-	printf("kasisky: (%d)\n",kasisky_i);
+	printf("kasisky: (%d)\n",*((int *)kasisky_i[0].key));
 	printf("friedman: (%f)\n",friedman_f);
 
 	free(kasisky);
