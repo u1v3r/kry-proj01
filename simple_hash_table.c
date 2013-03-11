@@ -32,7 +32,6 @@ void t_insert(void *key, void *value, unsigned int (*hash_fnc)(void *f_value, un
 		memcpy(node->next->value,value,value_s);
 		node->next->next = NULL;
 	}
-
 }
 
 hash_table_node_t *t_search(void *key, unsigned int (*hash_fnc)(void *f_value, unsigned int size), int (*comp)(void *a, void *b),hash_table_node_t *hash_table[], unsigned int hash_table_size){
