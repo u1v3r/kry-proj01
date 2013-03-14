@@ -293,7 +293,7 @@ void add_position(kasiski_node_t *ngram, int position, int ngram_len){
 }
 
 
-void search_rep(double search_start, const char *text, int sub_len,int text_len, kasiski_node_t *ngram){
+void search_rep(const char *search, const char *text, int sub_len,int text_len, kasiski_node_t *ngram){
 
 	int i,j;
 
@@ -301,7 +301,7 @@ void search_rep(double search_start, const char *text, int sub_len,int text_len,
 	for (i = 0; i < text_len; ++i) {
 		/* postupne porovnavaj znaky */
 		for (j = 0; j < sub_len; ++j) {
-			if(text[i + j] != search_start[search_start + j]){
+			if(text[i + j] != search[j]){
 				break;
 			}
 
