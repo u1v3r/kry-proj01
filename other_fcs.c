@@ -120,3 +120,57 @@ int gcds_calc(int *ngram, int len){
 
 	return tmp;
 }
+
+void text_to_columns(int column_length, char *string, double text_len, char **ics){
+
+	long column_max = TEXT_TO_COLUMN_MAX;
+	/*double *row_lens = (double *)malloc(column_max * sizeof(double));*/
+	char c;
+	double row_len;
+	unsigned long i = 0 , j = 0;
+
+	/* pri velkych m treba vytovirt miesto :D */
+	if(column_length >= column_max - 1 ){
+		column_max = column_length + 1;
+		ics = (char **)realloc(ics,column_max * sizeof(char *));
+		/*row_lens = (double *)realloc(row_lens,column_max * sizeof(double));*/
+	}
+
+	row_len = text_len/column_length;
+	j = 0;
+	i = 0;
+
+	while((c = string[i]) != 0){
+
+		if(i % column_length == 0 && i != 0){
+			j++;
+		}
+
+		if(row_len == j){
+			/*row_lens[i % column_length] = j;*/
+			break;
+		}
+
+		if(j == 0){
+			/*printf("zapisujem (%d): %d\n",m,i % m);*/
+			ics[i % column_length] = (char *)calloc(row_len+2,sizeof(char));
+		}
+
+		ics[i % column_length][j] = c;
+		/*row_lens[i % column_length] = j + 1;*/
+
+		i++;
+	}
+
+	/*return row_lens;*/
+}
+
+void letter_freqs(char *input, double freqs[]){
+
+	char c;
+	unsigned long i = 0;
+
+	while((c = input[i++]) != 0){
+		freqs[c - 'a']++;
+	}
+}

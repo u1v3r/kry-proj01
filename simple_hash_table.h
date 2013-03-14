@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct _node{
-	struct _node *next;
+typedef struct _hash_table_node{
+	struct _hash_table_node *next;
 	void *key;
    	void *value;
 } hash_table_node_t;

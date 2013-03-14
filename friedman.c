@@ -19,40 +19,6 @@ void *friedman_test(void *ptr){
 
 	if(len < 1) return friedman;
 
-	/*
-	while((c = c_text_s[i]) != 0){
-		letters[c - 'a']++;
-
-		if(i % COLUMNS == 0 && i != 0){
-			j++;
-		}
-
-		if(row_len == j){
-			break;
-		}
-
-		if(j == 0){
-			ics[i % COLUMNS] = (char *)calloc(row_len+2,sizeof(char));
-		}
-
-		ics[i % COLUMNS][j] = c;
-
-
-		i++;
-	}
-
-	for (i = 0; i < 26; ++i) {
-		lf += (letters[i]*(letters[i] - 1));
-	}
-
-
-	printf("skupiny:\n");
-	for (i = 0; i < COLUMNS; ++i) {
-		printf("%d - %s\n",i,ics[i]);
-	}
-
-	k0 = lf/(len*(len - 1));
-*/
 #if DEBUG == 1
 
 	long sum = 0;
@@ -68,78 +34,81 @@ void *friedman_test(void *ptr){
 	printf("(kp(%f) - kr(%f))/(k0(%f) - kr(%f))\n",kp,kr,k0,kr);
 #endif
 
-	k0 = index_of_coincidence(c_text_s,len);
+	k0 = index_of_coincidence(c_text_s,len,0);
 	*friedman = (kp - kr)/(k0 - kr);
-
-	/*test_len(c_text_s,len,(floor(*friedman)));*/
 
 	return friedman;
 }
 
-void test_len(char *string, double len, hash_table_node_t *m_numbers){
+int ic_passwd_len(char *string, double len, double friedman, kasiski_thread_result_t *m_numbers){
 
-	char **ics;
-	char c;
-	unsigned long i = 0 , j = 0, k, m, result_m;
-	double row_len,diff_sum = 0.0, ic_min = 1;
-	long column_max = 500;
+	char **ics = (char **)malloc(TEXT_TO_COLUMN_MAX * sizeof(char *));
+	unsigned long k, l = 0, m = 0;
+	/*double *row_lens = NULL;*/
+	double diff_sum = 0.0, ic_min = 100, diff_avg, kasiski = 0.0,kas_diff;
+	unsigned int result_m = 1, kasiski_key = *((int*)m_numbers->values[0].key);
 
-
-	ics = (char **)malloc(column_max * sizeof(char *));
-
-	for (m = 0; m < 10; m++) {
-
-		row_len = len/m;
-		j = 0;
-		i = 0;
-
-		while((c = string[i]) != 0){
-
-			if(i % m == 0 && i != 0){
-				j++;
-			}
-
-			if(row_len == j){
-				break;
-			}
-
-			if(j == 0){
-				ics[i % m] = (char *)calloc(row_len+2,sizeof(char));
-			}
-
-			ics[i % m][j] = c;
+	/*friedman = floor(friedman);*/
 
 
-			i++;
-		}
+	for (l = 0; l < m_numbers->len; ++l) {
 
+		m = *((int *)m_numbers->values[l].key);
 
+		text_to_columns(m,string,len,ics);
 
 		diff_sum = 0;
 		for (k = 0; k < m; ++k) {
-			diff_sum += fabs(index_of_coincidence(ics[k],strlen(ics[k])) - 0.0667);
+			/*printf("%d:%d == %f\n",k,strlen(ics[k]),row_lens[k]);*/
+			diff_sum += fabs(index_of_coincidence(ics[k],strlen(ics[k]),INDEX_OF_COINCIDENCE));
+#if DEBUG == 3
+			printf("ic: %f\n",fabs(index_of_coincidence(ics[k],strlen(ics[k]),0)));
+			/*printf("sum: %f\n",diff_sum);*/
+#endif
 			free(ics[k]);
 		}
 
-		/*printf("%d - %f < %f\n",m,diff_sum,ic_min);*/
 
-		if(diff_sum < ic_min){
-			ic_min = diff_sum;
+		diff_avg = diff_sum/m;
+
+#if DEBUG == 3
+		printf("\n%lu - %f < %f\n\n",m,diff_avg,ic_min);
+#endif
+		if(diff_avg < ic_min){
+			ic_min = diff_avg;
 			result_m = m;
 		}
 
+		if(kasiski_key == m){
+			kasiski = diff_avg;
+		}
 	}
 
-	printf("result: %lu\n",result_m);
+	kas_diff = fabs(kasiski-ic_min);
 
-	free(ics);
+#if DEBUG == 3
+	printf("diff: %f\n",kas_diff);
+#endif
+
+	if(kas_diff <= 0.000020){
+		result_m = kasiski_key;
+	}
+
+	/*printf("result: %lu\n",result_m);*/
+
+	if(ics != NULL) free(ics);
+
+	return result_m;
 }
 
-double index_of_coincidence(char *x, long len){
+
+/** vracia index konincidencie, pricom plati cim blizsie 0, tym lepsie */
+double index_of_coincidence(char *x, double len, double offset){
 
 	double lf = 0.0;
-	double freqs[LETTERS] = {0.0};
+	double freqs[LETTERS];
 	unsigned long i = 0;
+	memset(freqs,0,sizeof(freqs));
 
 	letter_freqs(x,freqs);
 
@@ -147,17 +116,5 @@ double index_of_coincidence(char *x, long len){
 		lf += (freqs[i]*(freqs[i] - 1));
 	}
 
-
-
-	return lf/(len*(len - 1));
-}
-
-void letter_freqs(char *input, double freqs[]){
-
-	char c;
-	unsigned long i = 0;
-
-	while((c = input[i++]) != 0){
-		freqs[c - 'a']++;
-	}
+	return (lf/(len*(len - 1))) - offset;
 }

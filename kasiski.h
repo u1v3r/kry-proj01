@@ -10,24 +10,11 @@
 
 #include "definitions.h"
 #include "other_fcs.h"
-#include "simple_hash_table.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-typedef struct kasiski_node{
-	struct kasiski_node *next;	/* ukazatel na dalsi uzol */
-	char *ngram;				/* text ngramu */
-	int *positions;				/* pozicie ngramu */
-	unsigned int _ngram_max_pos;
-	int count;					/* pocitadlo ngramov v texte */
-	unsigned int len;			/* dlzka ngramu */
-	int *distances;				/* vzdialenosti medzi ngram */
-	/*float weight;*/			/* vaha pouzivana pri vypocte gcd*/
-	/*int dist_sum;*/
-	int gcd;
-} kasiski_node_t;
+#include <math.h>
 
 void *kasiski_test(void *c_text_s);
 void find_ngrams(const char *c_text,unsigned int c_len);
@@ -38,7 +25,7 @@ void actualize_gcd_counter(kasiski_node_t* ngram_node);
 void search_rep(const char *search, const char *text, int sub_len,int text_len, kasiski_node_t *ngram);
 void kasisky_hashmap_to_list(hash_table_node_t *hash_table[], int hash_table_size, kasiski_node_t *res[NGRAM_STOP], int *sizes);
 hash_table_node_t *gcdcount_hashmap_to_list(hash_table_node_t *hash_table[],int size);
-hash_table_node_t *process_ngrams();
+kasiski_thread_result_t *process_ngrams();
 int q_compare_ngram(const void * a, const void * b);
 int q_compare_gcd(const void * a, const void * b);
 int q_compare_int(const void * a, const void * b);

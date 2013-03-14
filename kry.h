@@ -16,7 +16,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#ifdef THREADS
 #include <pthread.h>
+#endif
 
 char *strip_stdin(char *output_text);
 

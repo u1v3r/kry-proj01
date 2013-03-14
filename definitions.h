@@ -9,8 +9,12 @@
 #define DEFINITIONS_H_
 
 #define _POSIX_C_SOURCE 200809L
+
+#include "simple_hash_table.h"
+
 #define DEBUG 0
 
+#define INDEX_OF_COINCIDENCE 0.067
 #define NGRAMS_DEFAULT_SIZE 1000 		/* alokacia - pocet vsetkych ngramov v subore */
 #define NGRAMS_DEFAULT_POSITIONS 200 	/* alokacia - pocet alokovanej pamate pre pole pozicii ngramu v texte */
 #define NGRAM_START 3 			   		/* pociatocna dlzka hladanych n-gramov */
@@ -19,18 +23,39 @@
 #define SIZE_HASH_TABLE_GCDS 199		/* velkost hash table pre ukladanie vsetkych gcd */
 #define SIZE_HASH_TABLE_NGRAMS 10007	/* velkost hash table pre ukladanie ngramov */
 #define SIZE_HASH_TABLE_GCD_COUNT 59
-#define INPUT_TEXT_MAX_LENGTH 8000 	/* dlzka textu ktory sa zo vstupu pouzije na kasiskyho test */
+#define INPUT_TEXT_MAX_LENGTH 15000 	/* dlzka textu ktory sa zo vstupu pouzije na kasiskyho test */
 #define NGRAM_MIN_WEIGHT 3.4			/* koeficiant weight pri ktorom sa ngram zohladnuje do konecneho vysledku */
 #define NGRAM_COUNT_CONST 0.2
 #define NGRAM_LEN_CONST 0.4
+#define TEXT_TO_COLUMN_MAX 500			/* maximalny pocet buniek pri alokovani */
 #define LETTERS 26
 #define HASHMAP_LIST_MAX_SIZE 500
-#define NGRAMS_GCDS_COUNT 20			/* pocet ngramov, ktore sa zohladnuju pri vypocte do kasiskyho testu */
-
+#define NGRAMS_GCDS_COUNT 30			/* pocet ngramov, ktore sa zohladnuju pri vypocte do kasiskyho testu */
+#define KASISKY_IC_DIFF	0.000020		/* rozdiel medzi hodnotami (kasiski - IC), pri ktorom sa uprednostni kasisky pred IC */
+/*#define THREADS*/
 
 typedef struct _input_text{
 	char *text;							/* skrateny text na hodnotu INPUT_TEXT_MAX_LENGHT */
 	char *orig_text;					/* originalny text s odstranenymi zbytocnnymi znakmi*/
+	double friedman_res;				/* vysledok friedman test */
 } input_text_t;
+
+typedef struct _thread_result{
+	unsigned int len;					/* pocet vratenych hodnot */
+	struct _hash_table_node *values;	/* pole hodnot */
+} kasiski_thread_result_t;
+
+typedef struct _kasiski_node{
+	struct _kasiski_node *next;			/* ukazatel na dalsi uzol */
+	char *ngram;						/* text ngramu */
+	int *positions;						/* pozicie ngramu */
+	unsigned int _ngram_max_pos;
+	int count;							/* pocitadlo ngramov v texte */
+	unsigned int len;					/* dlzka ngramu */
+	int *distances;						/* vzdialenosti medzi ngram */
+	/*float weight;*/					/* vaha pouzivana pri vypocte gcd*/
+	/*int dist_sum;*/
+	int gcd;
+} kasiski_node_t;
 
 #endif /* DEFINITIONS_H_ */
