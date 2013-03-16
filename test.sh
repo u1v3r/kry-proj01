@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EXECFILE=./kry
-TESTINPUTS=inputs/*.txt
+TESTINPUTS=tests/inputs/*.txt
 DEBUG=time #valgrind
 DEBUGOPTS=-p
 

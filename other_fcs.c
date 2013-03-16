@@ -68,23 +68,19 @@ unsigned int hash_int(void *value, unsigned int hash_table_size){
 
 unsigned int hash_char(void *value, unsigned int hash_table_size){
 
+
 	unsigned hash_value = 0;
     int i = 0;
     char c;
-    const char *string = (char*)value;
-    /*int len = strlen(string);*/
 
-    while((c = string[i++]) != 0){
+    while((c = ((char*)value)[i++]) != 0){
     	hash_value = c ^ 11 * hash_value;
     }
 
-    /*
-    for(i = 0; i < len; i++){
-        hash_value = string[i] ^ 11 * hash_value;
-    }
-    */
-
     return (hash_value % hash_table_size);
+
+
+/*	return ((*(size_t*)value)>> 2) % hash_table_size;*/
 }
 
 int compare_int(void *a, void *b){

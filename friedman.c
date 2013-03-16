@@ -90,7 +90,7 @@ int ic_passwd_len(char *string, double len, double friedman, kasiski_thread_resu
 	printf("diff: %f\n",kas_diff);
 #endif
 
-	if(kas_diff <= 0.000020){
+	if(kas_diff <= KASISKY_IC_DIFF){
 		result_m = kasiski_key;
 	}
 

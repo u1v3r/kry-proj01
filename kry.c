@@ -7,7 +7,9 @@
 ------------------------------------------------------------------------------*/
 
 
+
 #include "kry.h"
+
 
 int main(int argc, char **argv) {
 
@@ -89,7 +91,13 @@ char *strip_stdin(char *output_text){
 	int c, count = 0, new_size = INPUT_TEXT_MAX_LENGTH;
 	char *orig_text = (char *)calloc(new_size,sizeof(char));
 
+#ifdef PROFILE
+	FILE *file;
+	file = fopen("tests/inputs/mexico.txt","r");
+	while((c = getc(file)) != EOF){
+#else
 	while((c = getchar()) != EOF){
+#endif
 		if(isalpha(c)){
 			if(count >= new_size - 1){
 				new_size = 3*count;

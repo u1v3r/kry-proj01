@@ -13,6 +13,8 @@
 #include "simple_hash_table.h"
 
 #define DEBUG 0
+/*#define PROFILE*/
+
 
 #define INDEX_OF_COINCIDENCE 0.067
 #define NGRAMS_DEFAULT_SIZE 1000 		/* alokacia - pocet vsetkych ngramov v subore */
@@ -21,8 +23,9 @@
 #define NGRAM_STOP 5
 #define NGRAM_MIN_COUNT 2				/* od akoho poctu ngramov sa zohladnuju a ukladaju */
 #define SIZE_HASH_TABLE_GCDS 199		/* velkost hash table pre ukladanie vsetkych gcd */
-#define SIZE_HASH_TABLE_NGRAMS 10007	/* velkost hash table pre ukladanie ngramov */
-#define SIZE_HASH_TABLE_GCD_COUNT 59
+#define SIZE_HASH_TABLE_NGRAMS 110017	/* velkost hash table pre ukladanie ngramov */
+#define SIZE_HASH_TABLE_ALL_NGRAMS 10007/* velkost hash table pre ukladanie vsetkych nramov (aj neopakujucich) */
+#define SIZE_HASH_TABLE_GCD_COUNT 5351
 #define INPUT_TEXT_MAX_LENGTH 15000 	/* dlzka textu ktory sa zo vstupu pouzije na kasiskyho test */
 #define NGRAM_MIN_WEIGHT 3.4			/* koeficiant weight pri ktorom sa ngram zohladnuje do konecneho vysledku */
 #define NGRAM_COUNT_CONST 0.2
@@ -57,5 +60,11 @@ typedef struct _kasiski_node{
 	/*int dist_sum;*/
 	int gcd;
 } kasiski_node_t;
+
+typedef struct _test{
+	const char *string;
+	unsigned int start;
+	unsigned int len;
+} test_t;
 
 #endif /* DEFINITIONS_H_ */
