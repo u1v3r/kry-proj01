@@ -56,6 +56,7 @@ int gcd_fast(int u,int v) {
 
 void substring(char *dest,const char *string, int start, int len) {
 
+
 	/*memset(dest,0,NGRAM_STOP);*/
 	memcpy(dest,string + start,len);
 	dest[len] = '\0';
@@ -99,14 +100,20 @@ int compare_char(void *a, void *b){
 	return 0;
 }
 
-int gcds_calc(int *ngram, int len){
+int gcds_calc(int *ngram, int dist_count){
 	int i, tmp;
 
-	if(len < 2) return -1;
+	/* ngram ma len dva vyskyty */
+	if(dist_count == 1 ) {
+		return ngram[0];
+	}else if(dist_count < 1){
+		/* ngramy sa neopakuju */
+		return 1;
+	}
 
-	tmp = gcd_fast(ngram[len-1],ngram[len-2]);
+	tmp = gcd_fast(ngram[dist_count-1],ngram[dist_count-2]);
 
-	for (i = len-3; i >= 0; --i) {
+	for (i = dist_count-3; i >= 0; --i) {
 		if(ngram[i] < 0){
 			return -1;
 		}
@@ -117,7 +124,7 @@ int gcds_calc(int *ngram, int len){
 	return tmp;
 }
 
-void text_to_columns(int column_length, char *string, double text_len, char **ics){
+char **text_to_columns(int column_length, char *string, double text_len, char **ics){
 
 	long column_max = TEXT_TO_COLUMN_MAX;
 	/*double *row_lens = (double *)malloc(column_max * sizeof(double));*/
@@ -143,22 +150,19 @@ void text_to_columns(int column_length, char *string, double text_len, char **ic
 		}
 
 		if(row_len == j){
-			/*row_lens[i % column_length] = j;*/
 			break;
 		}
 
 		if(j == 0){
-			/*printf("zapisujem (%d): %d\n",m,i % m);*/
 			ics[i % column_length] = (char *)calloc(row_len+2,sizeof(char));
 		}
 
 		ics[i % column_length][j] = c;
-		/*row_lens[i % column_length] = j + 1;*/
-
 		i++;
 	}
 
-	/*return row_lens;*/
+	return ics;
+
 }
 
 void letter_freqs(char *input, double freqs[]){

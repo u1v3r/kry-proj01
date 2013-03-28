@@ -16,7 +16,7 @@
 #include <string.h>
 #include <math.h>
 
-void *kasiski_test(void *c_text_s);
+void *kasiski_test(void *c_text_s, double friedman);
 void find_ngrams(const char *c_text,unsigned int c_len);
 void add_position(kasiski_node_t *ngram, int position, int ngram_len);
 kasiski_node_t *create_default_ngram_node(char *ngram);

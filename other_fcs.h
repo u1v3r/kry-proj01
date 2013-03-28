@@ -35,7 +35,7 @@ hash_char(void *value, unsigned int hash_table_size);
 int
 compare_char(void *a, void *b);
 
-void
+char **
 text_to_columns(int column_length, char *string, double text_len, char **ics);
 
 void

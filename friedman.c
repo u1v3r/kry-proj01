@@ -46,7 +46,14 @@ int ic_passwd_len(char *string, double len, double friedman, kasiski_thread_resu
 	unsigned long k, l = 0, m = 0;
 	/*double *row_lens = NULL;*/
 	double diff_sum = 0.0, ic_min = 100, diff_avg, kasiski = 0.0,kas_diff;
-	unsigned int result_m = 1, kasiski_key = *((int*)m_numbers->values[0].key);
+	unsigned int result_m = 1,kasiski_key;
+
+	if( m_numbers->len < 1){
+		return 0;
+	}
+
+	kasiski_key = *((int*)m_numbers->values[0].key);
+
 
 	/*friedman = floor(friedman);*/
 
@@ -55,7 +62,7 @@ int ic_passwd_len(char *string, double len, double friedman, kasiski_thread_resu
 
 		m = *((int *)m_numbers->values[l].key);
 
-		text_to_columns(m,string,len,ics);
+		ics = text_to_columns(m,string,len,ics);
 
 		diff_sum = 0;
 		for (k = 0; k < m; ++k) {
@@ -65,6 +72,8 @@ int ic_passwd_len(char *string, double len, double friedman, kasiski_thread_resu
 			printf("ic: %f\n",fabs(index_of_coincidence(ics[k],strlen(ics[k]),0)));
 			/*printf("sum: %f\n",diff_sum);*/
 #endif
+
+
 			free(ics[k]);
 		}
 

@@ -47,7 +47,7 @@ int *crack_paswd(char *text, int passwd_len, double text_len){
 	double max;
 	int best_shift = 0;
 
-	text_to_columns(passwd_len,text,text_len,ics);
+	ics = text_to_columns(passwd_len,text,text_len,ics);
 
 	for (j = 0; j < passwd_len; ++j) {
 		memset(l_freqs,0,sizeof(l_freqs));

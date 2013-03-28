@@ -20,11 +20,6 @@ int main(int argc, char **argv) {
 	int result = 1, i;
 	int *password;
 
-#ifdef THREADS
-	void *kasisky,*friedman;
-	pthread_t kasisky_thread, friedman_thread;
-#endif
-
 	if(argc != 1){
 		printf("bad param\n");
 		return 1;
@@ -40,32 +35,17 @@ int main(int argc, char **argv) {
 #endif
 
 
-#ifdef THREADS
-	pthread_create(&kasisky_thread,NULL,kasiski_test,&c_text_s);
-	pthread_create(&friedman_thread,NULL,friedman_test,c_text_s.orig_text);
 
-	pthread_join(kasisky_thread,&kasisky);
-	pthread_join(friedman_thread,&friedman);
-
-	kasisky_result = (kasiski_thread_result_t *)kasisky;
-	friedman_result = *((double*)(friedman));
-#else
 	f_result = friedman_test(c_text_s.orig_text);
 	friedman_result = *((double*)f_result);
 	c_text_s.friedman_res = friedman_result;
-	kasisky_result = (kasiski_thread_result_t *)kasiski_test(&c_text_s);
-#endif
-
+	kasisky_result = (kasiski_thread_result_t *)kasiski_test(&c_text_s,friedman_result);
 	result = ic_passwd_len(c_text_s.orig_text,strlen(c_text_s.orig_text),friedman_result,kasisky_result);
 	password = crack_paswd(c_text_s.orig_text,result,strlen(c_text_s.orig_text));
 
-#ifdef THREADS
-	free(kasisky);
-	free(friedman);
-#endif
-
 
 	printf("%2.4f;%d;%d;",friedman_result,*((int *)kasisky_result->values[0].key),result);
+	/*printf("%2.4f;%d;%d;",friedman_result,result,result);*/
 	for (i = 0; i < result; ++i) {
 		printf("%c",password[i] + 'a');
 	}

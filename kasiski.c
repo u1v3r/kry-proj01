@@ -14,7 +14,7 @@ kasiski_node_t* last_ngram;
 /*int last_ngram_size;*/
 int last_ngram_index = NGRAM_STOP;
 int ngram_count[NGRAM_STOP + 1];
-/*double friedman_result;*/
+double friedman_result;
 /*int ngram_pos_counter = 0;
 int tmp_pos_counter = 0;*/
 /*kasiski_node_t gcds[NGRAMS_GCDS_COUNT * NGRAM_STOP];*/
@@ -26,15 +26,11 @@ static hash_table_node_t *hash_table_gcd_count[SIZE_HASH_TABLE_GCD_COUNT];
 static hash_table_node_t *hash_table_all_ngrams[SIZE_HASH_TABLE_ALL_NGRAMS];
 
 
-void *kasiski_test(void *c_text_p){
+void *kasiski_test(void *c_text_p, double friedman){
 
 	input_text_t *c_text_s = c_text_p;
 	int text_len = strlen(c_text_s->text);
-/*
-#ifndef THREADS
-	friedman_result = floor(c_text_s->friedman_res);
-#endif
-*/
+	friedman_result = friedman;
 	/* najdi vsetky ngramy v text */
 	find_ngrams(c_text_s->text,text_len);
 	/**kasisky = gcd_hash_table_max();*/
@@ -65,14 +61,19 @@ kasiski_thread_result_t *process_ngrams(){
 	for (i = NGRAM_START; i <= last_ngram_index; ++i) {
 		qsort(res_list[i],sizes[i],sizeof(kasiski_node_t),q_compare_ngram);
 		for (j = 0; j < NGRAMS_GCDS_COUNT; ++j) {
-			if(j == sizes[i] || (res_list[i][j]).gcd < 1){
+			node_gcd = (res_list[i][j]).gcd;
+
+			if(j == sizes[i] || node_gcd < 1){
 				break;
 			}
-			node_gcd = (res_list[i][j]).gcd;
+
+			/* odstrani vsetky 1 na zaklade friedmana */
+			if((node_gcd == 1 && friedman_result > 1.5)) continue;
+
 			/*node_count = ((res_list[i][j]).count);
-					printf("%s - %d",(((kasisky_node_t)res_list[i][j]).ngram),node_count);
+			printf("%s - %d",(((kasiski_node_t)res_list[i][j]).ngram),node_count);
 			printf(" - %d\n",node_gcd);
-			 */
+			*/
 			if((gcd_node = t_search(&node_gcd,hash_int,compare_int,hash_table_gcd_count,SIZE_HASH_TABLE_GCD_COUNT)) != NULL){
 				(*((int *)gcd_node->value))++;
 			}else{
@@ -102,7 +103,6 @@ kasiski_thread_result_t *process_ngrams(){
 	printf("-----------------------------------------\n");
 #endif
 
-
 	result->len = node_len;
 	result->values = values;
 
@@ -116,24 +116,6 @@ void free_ngram_node(kasiski_node_t* ngram_node) {
 	free(ngram_node->positions);
 	free(ngram_node);
 }
-/*
-void actualize_gcd_counter(kasiski_node_t* ngram_node) {
-
-	hash_table_node_t *h_node;
-
-	if(ngram_node->gcd <= 0) return;
-
-	if ((h_node = t_search(&ngram_node->gcd, hash_int, compare_int,hash_table_gcds,SIZE_HASH_TABLE_GCDS)) == NULL ) {
-		 pre kazdy novy zaznam v hash table zacni pocitat od 1
-		int gcd_counter = 1;
-		t_insert(&ngram_node->gcd, &gcd_counter, hash_int,hash_table_gcds,sizeof(int),sizeof(int),SIZE_HASH_TABLE_GCDS);
-
-	} else {
-		 inak inkrementuj citac vyskytov
-		(*((int*) h_node->value))++;
-	}
-}
-*/
 
 void find_ngrams(const char *c_text,unsigned int c_len){
 
@@ -167,12 +149,18 @@ void find_ngrams(const char *c_text,unsigned int c_len){
 				/*weigth_sum += ngram_node->weight;*/
 				ngram_node->len = sub_len;
 				ngram_node->gcd = gcds_calc(ngram_node->distances,ngram_node->count - 1); /* "-1" - count udava pocet vykytov, nie vzdialenosti */
-
-
-				/* odstranienie nadbytocnych 1,2,3 */
-				if((ngram_node->gcd == 1 || ngram_node->gcd == 2 || ngram_node->gcd == 3) &&
-						(mallock_ngrams_count % 2 == 0 || mallock_ngrams_count % 3 == 0 ||
-								ngram_count[sub_len] % 2 == 0 || ngram_count[sub_len] % 3 == 0 ) ){
+#if DEBUG == 3
+				printf("\n\n");
+				printf("gcd: %d\n",ngram_node->gcd);
+				printf("thresh: %f\n",friedman_threshold);
+				printf("result: %f\n",ngram_node->gcd - friedman_threshold);
+				printf("\n\n");
+#endif
+				/* odstranienie nadbytocnych 1,2,3*/
+				if(((ngram_node->gcd == 1 || ngram_node->gcd == 2 || ngram_node->gcd == 3) &&
+						(mallock_ngrams_count % 2 == 0 ||
+								ngram_count[sub_len] % 2 == 0 ) )
+						){
 
 					free_ngram_node(ngram_node);
 					continue;
@@ -206,7 +194,6 @@ void find_ngrams(const char *c_text,unsigned int c_len){
 		}
 
 	}
-
 	free(subst);
 	/*free(test_subst);*/
 }
@@ -257,6 +244,7 @@ void add_position(kasiski_node_t *ngram, int position, int ngram_len){
 
 	/* vypocitanie vzdialenosti medzi poziciami */
 	if(ngram->count < 2) return;
+
 
 	/* distance[n - 1] = pos[n] - pos[0] */
 	ngram->distances[ngram->count - 2] = ngram->positions[ngram->count - 1] - ngram->positions[0];
