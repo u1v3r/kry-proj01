@@ -14,7 +14,7 @@
 
 #define DEBUG 0
 /*#define PROFILE*/
-
+/*#define TIMES*/
 
 #define INDEX_OF_COINCIDENCE 0.067
 #define NGRAMS_DEFAULT_SIZE 1000 		/* alokacia - pocet vsetkych ngramov v subore */
@@ -50,7 +50,7 @@ typedef struct _thread_result{
 
 typedef struct _kasiski_node{
 	struct _kasiski_node *next;			/* ukazatel na dalsi uzol */
-	char *ngram;						/* text ngramu */
+	/*char *ngram;*/						/* text ngramu */
 	int *positions;						/* pozicie ngramu */
 	unsigned int _ngram_max_pos;
 	int count;							/* pocitadlo ngramov v texte */

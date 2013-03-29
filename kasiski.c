@@ -6,7 +6,7 @@
  */
 
 #include "kasiski.h"
-#define MAX(a,b)         ((a < b) ?  (b) : (a))
+
 int mallock_ngrams_count = 0;						/* pocitadlo aktualneho stavu ulozenych ngramov */
 int ngrams_max_size = NGRAMS_DEFAULT_SIZE;			/* inicializacia maximalnej hodnoty ngramov v tabulke */
 /*int ngram_pos_max_size = NGRAMS_DEFAULT_POSITIONS;*/
@@ -31,11 +31,49 @@ void *kasiski_test(void *c_text_p, double friedman){
 	input_text_t *c_text_s = c_text_p;
 	int text_len = strlen(c_text_s->text);
 	friedman_result = friedman;
+
+#ifdef TIMES
+	struct timeval start_time, end_time;
+	long mtime, seconds, useconds;
+
+	gettimeofday(&start_time, NULL);
+
+#endif
 	/* najdi vsetky ngramy v text */
 	find_ngrams(c_text_s->text,text_len);
-	/**kasisky = gcd_hash_table_max();*/
+#ifdef TIMES
 
+	gettimeofday(&end_time, NULL);
+
+	seconds  = end_time.tv_sec  - start_time.tv_sec;
+	useconds = end_time.tv_usec - start_time.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+	printf("find_ngrams(): %ld milliseconds\n", mtime);
+
+#endif
+
+#ifdef TIMES
+	kasiski_thread_result_t *result;
+
+	gettimeofday(&start_time, NULL);
+
+	result = process_ngrams();
+
+	gettimeofday(&end_time, NULL);
+
+	seconds  = end_time.tv_sec  - start_time.tv_sec;
+	useconds = end_time.tv_usec - start_time.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+	printf("process_ngrams(): %ld milliseconds\n", mtime);
+
+	return result;
+#else
 	return process_ngrams();
+#endif
 }
 
 kasiski_thread_result_t *process_ngrams(){
@@ -111,7 +149,6 @@ kasiski_thread_result_t *process_ngrams(){
 
 
 void free_ngram_node(kasiski_node_t* ngram_node) {
-	free(ngram_node->ngram);
 	free(ngram_node->distances);
 	free(ngram_node->positions);
 	free(ngram_node);
@@ -121,12 +158,9 @@ void find_ngrams(const char *c_text,unsigned int c_len){
 
 	unsigned int sub_len,i;
 	char *subst = (char *)malloc((NGRAM_STOP + 1) * sizeof(char));
-	/*char *test_subst = (char *)malloc((NGRAM_STOP + 1) * sizeof(char));*/
 	kasiski_node_t *ngram_node;
-	/*double weigth_sum = 0.0;
-	double weight_avg = 3.1;
-	*/
-	/*gcds = (int *)malloc(ngrams_max_size * sizeof(int));*/
+	char *start_pos;
+	int pos;
 
 	/* pocitaj dlzku substringu */
 	for(sub_len = NGRAM_START; sub_len <= NGRAM_STOP; sub_len++){
@@ -138,43 +172,50 @@ void find_ngrams(const char *c_text,unsigned int c_len){
 			if(t_search(subst,hash_char,compare_char,hash_table_all_ngrams,SIZE_HASH_TABLE_ALL_NGRAMS) != NULL){
 				continue;
 			}
+			t_insert(subst,subst,hash_char,hash_table_all_ngrams,sizeof(char)*sub_len+1,sizeof(char)*sub_len+1,SIZE_HASH_TABLE_ALL_NGRAMS);
 
-			ngram_node = create_default_ngram_node(subst);
-			t_insert(ngram_node->ngram,ngram_node->ngram,hash_char,hash_table_all_ngrams,sizeof(char)*sub_len+1,sizeof(char)*sub_len+1,SIZE_HASH_TABLE_ALL_NGRAMS);
-			quick_text_search(subst,c_text,sub_len,c_len,ngram_node);
+			/* najskor zisti ci ma zmysel vobec zacinat hladat */
+			if((start_pos = strstr(c_text,subst)) != NULL){
+				pos = start_pos - c_text;
+				ngram_node = create_default_ngram_node(subst);
+				add_position(ngram_node,pos,sub_len);
+				quick_text_search(subst,start_pos,sub_len,strlen(start_pos),ngram_node,c_text);
 
-			/* ak sa nachdza v texte n-krat, tak vytvor strukturu */
-			if(ngram_node->count >= NGRAM_MIN_COUNT){
+				/* ak sa nachdza v texte n-krat, tak vytvor strukturu */
+				if(ngram_node->count >= NGRAM_MIN_COUNT){
 
-				/*weigth_sum += ngram_node->weight;*/
-				ngram_node->len = sub_len;
-				ngram_node->gcd = gcds_calc(ngram_node->distances,ngram_node->count - 1); /* "-1" - count udava pocet vykytov, nie vzdialenosti */
+					/*weigth_sum += ngram_node->weight;*/
+					ngram_node->len = sub_len;
+					ngram_node->gcd = gcds_calc(ngram_node->distances,ngram_node->count - 1); /* "-1" - count udava pocet vykytov, nie vzdialenosti */
+
 #if DEBUG == 3
-				printf("\n\n");
-				printf("gcd: %d\n",ngram_node->gcd);
-				printf("thresh: %f\n",friedman_threshold);
-				printf("result: %f\n",ngram_node->gcd - friedman_threshold);
-				printf("\n\n");
+					printf("\n\n");
+					printf("gcd: %d\n",ngram_node->gcd);
+					printf("thresh: %f\n",friedman_threshold);
+					printf("result: %f\n",ngram_node->gcd - friedman_threshold);
+					printf("\n\n");
 #endif
-				/* odstranienie nadbytocnych 1,2,3*/
-				if(((ngram_node->gcd == 1 || ngram_node->gcd == 2 || ngram_node->gcd == 3) &&
-						(mallock_ngrams_count % 2 == 0 ||
-								ngram_count[sub_len] % 2 == 0 ) )
-						){
+					/* odstranienie nadbytocnych 1,2,3*/
+					if(((ngram_node->gcd == 1 || ngram_node->gcd == 2 || ngram_node->gcd == 3) &&
+							(mallock_ngrams_count % 2 == 0 ||
+									ngram_count[sub_len] % 2 == 0 ) )
+					){
 
+						free_ngram_node(ngram_node);
+						continue;
+					}
+
+					t_insert(subst,ngram_node,hash_char,hash_table_ngrams,sizeof(char)*sub_len+1,sizeof(kasiski_node_t),SIZE_HASH_TABLE_NGRAMS);
+					/*ngram_pos_counter += tmp_pos_counter;*/			/* aktualizuj citac celkoveho poctu pozicii (pouziva sa na priemer) */
+					ngram_count[sub_len]++;								/* aktualizuj citac pre ngramy zvlast pre kazdu dlzku */
+					mallock_ngrams_count++;								/* cekovy pocet ngramov */
+					/*actualize_gcd_counter(ngram_node);*/					/* aktualizuj citac gcd */
+
+				}else{
+					/* ak je len jeden, tak uvolni pamat */
 					free_ngram_node(ngram_node);
-					continue;
+					/*tmp_pos_counter = 0;*/
 				}
-
-				t_insert(ngram_node->ngram,ngram_node,hash_char,hash_table_ngrams,sizeof(char)*sub_len+1,sizeof(kasiski_node_t),SIZE_HASH_TABLE_NGRAMS);
-				/*ngram_pos_counter += tmp_pos_counter;*/			/* aktualizuj citac celkoveho poctu pozicii (pouziva sa na priemer) */
-				ngram_count[sub_len]++;								/* aktualizuj citac pre ngramy zvlast pre kazdu dlzku */
-				mallock_ngrams_count++;								/* cekovy pocet ngramov */
-				/*actualize_gcd_counter(ngram_node);*/					/* aktualizuj citac gcd */
-			}else{
-				/* ak je len jeden, tak uvolni pamat */
-				free_ngram_node(ngram_node);
-				/*tmp_pos_counter = 0;*/
 			}
 		}
 
@@ -198,7 +239,7 @@ void find_ngrams(const char *c_text,unsigned int c_len){
 	/*free(test_subst);*/
 }
 
-kasiski_node_t *create_default_ngram_node(char *ngram){
+kasiski_node_t *create_default_ngram_node(){
 
 	/* alokacia pamate pre strukturu */
 	kasiski_node_t *new_node = (kasiski_node_t *) malloc(sizeof(kasiski_node_t));
@@ -212,9 +253,9 @@ kasiski_node_t *create_default_ngram_node(char *ngram){
 	new_node->positions = (int *) malloc(NGRAMS_DEFAULT_POSITIONS * sizeof(int));
 	new_node->distances = (int *) malloc(NGRAMS_DEFAULT_POSITIONS * sizeof(int));
 
-	new_node->ngram = (char *)malloc((NGRAM_STOP + 1) * sizeof(char));
+	/*new_node->ngram = (char *)malloc((NGRAM_STOP + 1) * sizeof(char));
 	strcpy(new_node->ngram,ngram);
-
+	*/
 	/*new_node->dist_sum = 0;*/
 	/*new_node->positions[0] = position;*/
 	new_node->count = 0;
@@ -293,7 +334,7 @@ void prep(const char *x, int m, int bad_char_table[]){
 }
 
 /* quick search alg. */
-void quick_text_search(const char *search,const char *text, int subl_len, int text_len, kasiski_node_t *ngram){
+void quick_text_search2(const char *search,const char *text, int subl_len, int text_len, kasiski_node_t *ngram){
 	int j, bad_char_table[512];
 
 	prep(search, subl_len, bad_char_table);
@@ -305,6 +346,18 @@ void quick_text_search(const char *search,const char *text, int subl_len, int te
 		}
 
 		j += bad_char_table[(int)text[j + subl_len]];
+	}
+}
+
+void quick_text_search(const char *search,const char *text, int subl_len, int text_len, kasiski_node_t *ngram, const char *orig_text){
+
+	int pos;
+	char *ptr;
+
+	while((ptr = strstr(text + 1,search)) != NULL){
+		pos = ptr - orig_text;
+		add_position(ngram,pos,subl_len);
+		text = ptr;
 	}
 }
 

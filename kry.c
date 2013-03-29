@@ -35,14 +35,63 @@ int main(int argc, char **argv) {
 #endif
 
 
+#ifdef TIMES
+	struct timeval start_time, end_time;
+	long mtime, seconds, useconds;
 
+	gettimeofday(&start_time, NULL);
+
+#endif
 	f_result = friedman_test(c_text_s.orig_text);
+#ifdef TIMES
+
+	gettimeofday(&end_time, NULL);
+
+	seconds  = end_time.tv_sec  - start_time.tv_sec;
+	useconds = end_time.tv_usec - start_time.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+	printf("friedman_test(): %ld milliseconds\n", mtime);
+
+#endif
+
 	friedman_result = *((double*)f_result);
 	c_text_s.friedman_res = friedman_result;
 	kasisky_result = (kasiski_thread_result_t *)kasiski_test(&c_text_s,friedman_result);
-	result = ic_passwd_len(c_text_s.orig_text,strlen(c_text_s.orig_text),friedman_result,kasisky_result);
-	password = crack_paswd(c_text_s.orig_text,result,strlen(c_text_s.orig_text));
 
+#ifdef TIMES
+	gettimeofday(&start_time, NULL);
+#endif
+	result = ic_passwd_len(c_text_s.orig_text,strlen(c_text_s.orig_text),friedman_result,kasisky_result);
+#ifdef TIMES
+
+	gettimeofday(&end_time, NULL);
+
+	seconds  = end_time.tv_sec  - start_time.tv_sec;
+	useconds = end_time.tv_usec - start_time.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+	printf("passwd_len(): %ld milliseconds\n", mtime);
+
+#endif
+#ifdef TIMES
+	gettimeofday(&start_time, NULL);
+#endif
+	password = crack_paswd(c_text_s.orig_text,result,strlen(c_text_s.orig_text));
+#ifdef TIMES
+
+	gettimeofday(&end_time, NULL);
+
+	seconds  = end_time.tv_sec  - start_time.tv_sec;
+	useconds = end_time.tv_usec - start_time.tv_usec;
+
+	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+	printf("crack_paswd(): %ld milliseconds\n", mtime);
+
+#endif
 
 	printf("%2.4f;%d;%d;",friedman_result,*((int *)kasisky_result->values[0].key),result);
 	/*printf("%2.4f;%d;%d;",friedman_result,result,result);*/

@@ -17,8 +17,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#ifdef THREADS
-#include <pthread.h>
+#ifdef TIMES
+#include "sys/time.h"
 #endif
 
 char *strip_stdin(char *output_text);
