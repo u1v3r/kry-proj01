@@ -10,12 +10,10 @@
 
 #include "definitions.h"
 #include <string.h>
-
-unsigned
-int gcd_slow(unsigned int a, unsigned int b);
+#include <stdio.h>
 
 int
-gcd_fast(int u,int v);
+gcd(int u,int v);
 
 void
 substring(char *dest,const char *string, int start, int len);
@@ -40,5 +38,8 @@ text_to_columns(int column_length, char *string, double text_len, char **ics);
 
 void
 letter_freqs(char *input, double freqs[]);
+
+unsigned int
+hash_char_2(void *value, unsigned int hash_table_size);
 
 #endif /* OTHER_FCS_H_ */

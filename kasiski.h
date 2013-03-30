@@ -25,11 +25,7 @@ void find_ngrams(const char *c_text,unsigned int c_len);
 void add_position(kasiski_node_t *ngram, int position, int ngram_len);
 kasiski_node_t *create_default_ngram_node();
 void free_ngram_node(kasiski_node_t* ngram_node);
-/*void actualize_gcd_counter(kasiski_node_t* ngram_node);*/
-void search_rep(const char *search, const char *text, int sub_len,int text_len, kasiski_node_t *ngram);
-void prep(const char *x, int m, int bad_char_table[]);
-void quick_text_search(const char *search,const char *text, int subl_len, int text_len, kasiski_node_t *ngram, const char *orig_text);
-void quick_text_search2(const char *search,const char *text, int subl_len, int text_len, kasiski_node_t *ngram);
+void substring_search(const char *search,const char *text, int subl_len, kasiski_node_t *ngram, const char *orig_text);
 void kasisky_hashmap_to_list(hash_table_node_t *hash_table[], int hash_table_size, kasiski_node_t *res[NGRAM_STOP], int *sizes);
 hash_table_node_t *gcdcount_hashmap_to_list(hash_table_node_t *hash_table[],int size);
 kasiski_thread_result_t *process_ngrams();

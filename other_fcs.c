@@ -6,19 +6,12 @@
  */
 
 #include "other_fcs.h"
-#include "stdio.h"
 
-unsigned int gcd_slow(unsigned int a, unsigned int b) {
-
-	if(a==0) return b;
-
-	return gcd_slow(b % a, a);
-}
 
 /*
  * http://comeoncodeon.wordpress.com/2009/02/26/binary-gcd-algorithm/
  */
-int gcd_fast(int u,int v) {
+int gcd(int u,int v) {
 
 	int k = 0, t = 0, i;
 
@@ -55,7 +48,6 @@ int gcd_fast(int u,int v) {
 }
 
 void substring(char *dest,const char *string, int start, int len) {
-
 
 	/*memset(dest,0,NGRAM_STOP);*/
 	memcpy(dest,string + start,len);
@@ -111,13 +103,13 @@ int gcds_calc(int *ngram, int dist_count){
 		return 1;
 	}
 
-	tmp = gcd_fast(ngram[dist_count-1],ngram[dist_count-2]);
+	tmp = gcd(ngram[dist_count-1],ngram[dist_count-2]);
 
 	for (i = dist_count-3; i >= 0; --i) {
 		if(ngram[i] < 0){
 			return -1;
 		}
-		tmp = gcd_fast(tmp,ngram[i]);
+		tmp = gcd(tmp,ngram[i]);
 	}
 
 
@@ -173,4 +165,17 @@ void letter_freqs(char *input, double freqs[]){
 	while((c = input[i++]) != 0){
 		freqs[c - 'a']++;
 	}
+}
+
+unsigned int hash_char_2(void *value, unsigned int hash_table_size){
+
+	char *data = (char*)value;
+	unsigned h = data[0];
+	int i;
+
+	for (i = 1; data[i] != 0; ++i){
+		h = (h << 4) + data[ i ];
+	}
+
+	return h % hash_table_size;
 }

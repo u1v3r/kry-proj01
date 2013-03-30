@@ -57,13 +57,12 @@ int main(int argc, char **argv) {
 #endif
 
 	friedman_result = *((double*)f_result);
-	c_text_s.friedman_res = friedman_result;
 	kasisky_result = (kasiski_thread_result_t *)kasiski_test(&c_text_s,friedman_result);
 
 #ifdef TIMES
 	gettimeofday(&start_time, NULL);
 #endif
-	result = ic_passwd_len(c_text_s.orig_text,strlen(c_text_s.orig_text),friedman_result,kasisky_result);
+	result = ic_passwd_len(c_text_s.text,strlen(c_text_s.text),friedman_result,kasisky_result);
 #ifdef TIMES
 
 	gettimeofday(&end_time, NULL);
@@ -79,7 +78,7 @@ int main(int argc, char **argv) {
 #ifdef TIMES
 	gettimeofday(&start_time, NULL);
 #endif
-	password = crack_paswd(c_text_s.orig_text,result,strlen(c_text_s.orig_text));
+	password = crack_paswd(c_text_s.text,result,strlen(c_text_s.text));
 #ifdef TIMES
 
 	gettimeofday(&end_time, NULL);
@@ -93,8 +92,9 @@ int main(int argc, char **argv) {
 
 #endif
 
+
 	printf("%2.4f;%d;%d;",friedman_result,*((int *)kasisky_result->values[0].key),result);
-	/*printf("%2.4f;%d;%d;",friedman_result,result,result);*/
+
 	for (i = 0; i < result; ++i) {
 		printf("%c",password[i] + 'a');
 	}
@@ -130,9 +130,6 @@ char *strip_stdin(char *output_text){
 		if(isalpha(c)){
 			if(count >= new_size - 1){
 				new_size = 3*count;
-#if DEBUG == 2
-				printf("reall new size: %d\n",new_size);
-#endif
 				orig_text = (char *)realloc(orig_text,new_size * sizeof(char));
 			}
 			c = tolower(c);

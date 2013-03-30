@@ -2,11 +2,12 @@
 
 CC = gcc
 PNAME = kry
-CFLAGS = -Wall -ansi -pedantic -lm -Ofast
+CFLAGS = -Wall -ansi -pedantic -lm -Ofast -pg -g
 
 objects = kasiski.o simple_hash_table.o friedman.o other_fcs.o decrypt.o
 
-rebuild: clean all 
+
+rebuild: clean all
 
 all: $(PNAME).c $(objects)
 	$(CC) $(CFLAGS) -o $(PNAME) $(PNAME).c $(objects)
@@ -28,6 +29,3 @@ decrypt.o: decrypt.h decrypt.c
 	
 clean: $(PNAME).c
 	rm -f $(PNAME) *.o *.out *.sum
-	
-	
-	
