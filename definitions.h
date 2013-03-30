@@ -32,7 +32,7 @@
 #define HASHMAP_LIST_MAX_SIZE 500
 #define NGRAMS_GCDS_COUNT 30			/* pocet ngramov, ktore sa zohladnuju pri vypocte do kasiskyho testu */
 #define KASISKY_IC_DIFF	0.000040		/* rozdiel medzi hodnotami (kasiski - IC), pri ktorom sa uprednostni kasisky pred IC */
-
+#define ALL_POS_COUNT 20000
 
 typedef struct _input_text{
 	char *text;							/* skrateny text na hodnotu INPUT_TEXT_MAX_LENGHT */

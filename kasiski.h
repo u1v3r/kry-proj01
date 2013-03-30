@@ -22,10 +22,10 @@
 
 void *kasiski_test(void *c_text_s, double friedman);
 void find_ngrams(const char *c_text,unsigned int c_len);
-void add_position(kasiski_node_t *ngram, int position, int ngram_len);
+void add_position(kasiski_node_t *ngram, int position, int ngram_len, unsigned int *all_pos_counter);
 kasiski_node_t *create_default_ngram_node();
 void free_ngram_node(kasiski_node_t* ngram_node);
-void substring_search(const char *search,const char *text, int subl_len, kasiski_node_t *ngram, const char *orig_text);
+void substring_search(const char *search,const char *text, int subl_len, kasiski_node_t *ngram, const char *orig_text,unsigned int *all_pos_counter);
 void kasisky_hashmap_to_list(hash_table_node_t *hash_table[], int hash_table_size, kasiski_node_t *res[NGRAM_STOP], int *sizes);
 hash_table_node_t *gcdcount_hashmap_to_list(hash_table_node_t *hash_table[],int size);
 kasiski_thread_result_t *process_ngrams();
