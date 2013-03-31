@@ -7,9 +7,9 @@ static double friedman_result;
 static int *all_pos;
 static int all_pos_max = ALL_POS_COUNT;
 
-static hash_table_node_t *hash_table_ngrams[SIZE_HASH_TABLE_NGRAMS];
-static hash_table_node_t *hash_table_gcd_count[SIZE_HASH_TABLE_GCD_COUNT];
-static hash_table_node_t *hash_table_all_ngrams[SIZE_HASH_TABLE_ALL_NGRAMS];
+hash_table_node_t *hash_table_ngrams[SIZE_HASH_TABLE_NGRAMS];
+hash_table_node_t *hash_table_gcd_count[SIZE_HASH_TABLE_GCD_COUNT];
+hash_table_node_t *hash_table_all_ngrams[SIZE_HASH_TABLE_ALL_NGRAMS];
 
 
 void *kasiski_test(void *c_text_p, double friedman){

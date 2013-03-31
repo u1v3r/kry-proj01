@@ -96,6 +96,9 @@ int main(int argc, char **argv) {
 	free(password);
 	free(c_text_s.text);
 	free(c_text_s.orig_text);
+	free_hash_table(hash_table_all_ngrams,SIZE_HASH_TABLE_ALL_NGRAMS);
+	free_hash_table(hash_table_ngrams,SIZE_HASH_TABLE_NGRAMS);
+	free_hash_table(hash_table_gcd_count,SIZE_HASH_TABLE_GCD_COUNT);
 
 	return 0;
 }

@@ -49,4 +49,22 @@ hash_table_node_t *t_search(void *key, unsigned int (*hash_fnc)(void *f_value, u
 	return NULL;
 }
 
+void free_hash_table(hash_table_node_t *hash_table[], int hash_table_size){
+	unsigned int i = 0;
+	hash_table_node_t *node,*old;
+
+	for (i = 0; i < hash_table_size; ++i) {
+		node = hash_table[i];
+		if(node != NULL){
+			while(node != NULL){
+				free(node->key);
+				free(node->value);
+				old = node;
+				node = old->next;
+				free(old);
+			}
+		}
+	}
+}
+
 

@@ -13,6 +13,10 @@
 #include "sys/time.h"
 #endif
 
+hash_table_node_t *hash_table_ngrams[SIZE_HASH_TABLE_NGRAMS];
+hash_table_node_t *hash_table_gcd_count[SIZE_HASH_TABLE_GCD_COUNT];
+hash_table_node_t *hash_table_all_ngrams[SIZE_HASH_TABLE_ALL_NGRAMS];
+
 void *kasiski_test(void *c_text_s, double friedman);
 void find_ngrams(const char *c_text,unsigned int c_len);
 void add_position(kasiski_node_t *ngram, int position, int ngram_len, unsigned int *all_pos_counter);

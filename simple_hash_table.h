@@ -29,4 +29,7 @@ hash_table_node_t
 		hash_table_node_t *hash_table[],
 		unsigned int hash_table_size);
 
+void
+free_hash_table(hash_table_node_t *hash_table[], int hash_table_size);
+
 #endif /* SIMPLE_HASH_TABLE_H_ */
