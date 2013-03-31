@@ -1,16 +1,15 @@
-# Makefile pre proj01
+# Makefile pre KRY-proj01
 
 CC = gcc
 PNAME = kry
-CFLAGS = -Wall -ansi -pedantic -lm -Ofast
+CFLAGS = -Wall -ansi -pedantic -lm -O3
 
 objects = kasiski.o simple_hash_table.o friedman.o other_fcs.o decrypt.o
 
-
-rebuild: clean all
-
 all: $(PNAME).c $(objects)
 	$(CC) $(CFLAGS) -o $(PNAME) $(PNAME).c $(objects)
+
+rebuild: clean all
 
 kasiski.o: kasiski.h kasiski.c
 	$(CC) $(CFLAGS) -c -o kasiski.o kasiski.c 

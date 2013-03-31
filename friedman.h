@@ -1,10 +1,3 @@
-/*
- * friedman.h
- *
- *  Created on: 7.3.2013
- *      Author: rdy
- */
-
 #ifndef FRIEDMAN_H_
 #define FRIEDMAN_H_
 

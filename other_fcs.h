@@ -1,10 +1,3 @@
-/*
- * other_fcs.h
- *
- *  Created on: 7.3.2013
- *      Author: rdy
- */
-
 #ifndef OTHER_FCS_H_
 #define OTHER_FCS_H_
 

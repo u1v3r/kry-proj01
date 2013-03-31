@@ -1,10 +1,3 @@
-/*
- * kasiski.h
- *
- *  Created on: 1.3.2013
- *      Author: rdy
- */
-
 #ifndef KASISKY_H_
 #define KASISKI_H_
 

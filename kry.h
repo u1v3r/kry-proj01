@@ -1,10 +1,3 @@
-/*
- * kry.h
- *
- *  Created on: 1.3.2013
- *      Author: rdy
- */
-
 #ifndef KRY_H_
 #define KRY_H_
 

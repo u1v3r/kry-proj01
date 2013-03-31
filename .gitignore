@@ -6,3 +6,6 @@ tests/
 *.txt
 *.zip
 .settings/
+*.pdf
+*.odt
+*.tar

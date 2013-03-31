@@ -1,10 +1,3 @@
-/*
- * other_fcs.c
- *
- *  Created on: 7.3.2013
- *      Author: rdy
- */
-
 #include "other_fcs.h"
 
 
@@ -116,6 +109,7 @@ int gcds_calc(int *ngram, int dist_count){
 	return tmp;
 }
 
+/* rozdeli text do stlpcov */
 char **text_to_columns(int column_length, char *string, double text_len, char **ics){
 
 	long column_max = TEXT_TO_COLUMN_MAX;

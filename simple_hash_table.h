@@ -1,10 +1,3 @@
-/*
- * simple_hash_table.h
- *
- *  Created on: 6.3.2013
- *      Author: Radovan Dvorsky
- */
-
 #ifndef SIMPLE_HASH_TABLE_H_
 #define SIMPLE_HASH_TABLE_H_
 
