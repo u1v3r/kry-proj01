@@ -3,6 +3,7 @@ kry
 *.o
 *.out
 tests/
+tests2/
 *.txt
 *.zip
 .settings/

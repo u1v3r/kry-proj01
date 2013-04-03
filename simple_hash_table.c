@@ -13,9 +13,9 @@ void t_insert(void *key, void *value, unsigned int (*hash_fnc)(void *f_value, un
 
 	if(hash_table[hash] == NULL){
 		hash_table[hash] = (hash_table_node_t *) malloc(sizeof(hash_table_node_t));
-		hash_table[hash]->key = (void *)malloc(key_s);
+		hash_table[hash]->key = malloc(key_s);
 		memcpy(hash_table[hash]->key,key,key_s);
-		hash_table[hash]->value = (void *)malloc(value_s);
+		hash_table[hash]->value = malloc(value_s);
 		memcpy(hash_table[hash]->value,value,value_s);
 		hash_table[hash]->next = NULL;
 	}else{
@@ -26,9 +26,9 @@ void t_insert(void *key, void *value, unsigned int (*hash_fnc)(void *f_value, un
 		}
 
 		node->next = (hash_table_node_t *) malloc(sizeof(hash_table_node_t));
-		node->next->key = (void *)malloc(key_s);
+		node->next->key = malloc(key_s);
 		memcpy(node->next->key,key,key_s);
-		node->next->value = (void *)malloc(value_s);
+		node->next->value = malloc(value_s);
 		memcpy(node->next->value,value,value_s);
 		node->next->next = NULL;
 	}
